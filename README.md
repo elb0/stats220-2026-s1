@@ -7,4 +7,4 @@ This repo is for demonstrating GitHub ideas for STATS 220. Students will make th
 
 ## Project 1 checklist
 
--[] Do project 1
+[ ] Do project 1
