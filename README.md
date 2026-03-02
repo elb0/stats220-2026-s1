@@ -10,7 +10,7 @@ This repo is for demonstrating GitHub ideas for **STATS 220**. Students will mak
 
 ![Don’t Play Lotto! - Liza talking about lottery results on The Project](https://cdn.prod.website-files.com/5f52ee8742231076d9e52bb4/5fa715c5f9ced08d8c226f78_kDk0oQnA.jpeg)
 
-- One of my favourite 'side quests' students did in a course I taught at the ![Univeristy of Toronto](https://www.utoronto.ca/) was to use R to make a breathing exercise:
+- One of my favourite 'side quests' students did in a course I taught at the [Univeristy of Toronto](https://www.utoronto.ca/) was to use R to make a breathing exercise:
 
 ![A cloud of points moving around the screen in a square shape along with instructions for box breathing. Inhale for 4 seconds, hold for 4, exhale for 4, hold for 4 and repeat.](https://sta303-bolton.github.io/sta303-w22-courseguide/images/assessments/box_dots.gif)
 
