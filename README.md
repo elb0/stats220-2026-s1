@@ -4,6 +4,7 @@ This repo is for demonstrating GitHub ideas for STATS 220. Students will make th
 
 ## About me
 
+You can find out more about me on my [personal website](https://www.lizabolton.com/). 
 
 ## Project 1 checklist
 
