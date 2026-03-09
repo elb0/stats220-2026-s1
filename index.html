@@ -3,72 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liza Bolton | STATS 220</title>
+    <title>Liza Bolton | Statistics & Data Science Educator</title>
     <style>
+        /* CSS Reset and Basic Styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
             color: #333;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        header {
-            border-bottom: 2px solid #00467F; /* UoA Blue */
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-        h1 { color: #00467F; }
-        .repo-links {
-            display: flex;
-            gap: 20px;
-            list-style: none;
+            margin: 0;
             padding: 0;
+            background-color: #fff;
         }
-        .repo-links a {
+
+        /* Container for centering content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px 0;
+        }
+
+        nav a {
+            margin-left: 20px;
             text-decoration: none;
-            font-weight: bold;
-            color: #007bff;
+            color: #555;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
         }
-        .repo-links a:hover { text-decoration: underline; }
+
+        nav a:hover {
+            color: #000;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px 0;
+            flex-wrap: wrap;
+        }
+
+        .hero-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .hero-text h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 500px;
+        }
+
+        .hero-image {
+            flex: 0 0 300px;
+            text-align: right;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 50%; /* Making it circular like her profile style */
+            max-width: 250px;
+            filter: grayscale(20%);
+        }
+
+        /* Social Links */
+        .social-links {
+            margin-top: 30px;
+        }
+
+        .social-links a {
+            margin-right: 15px;
+            text-decoration: none;
+            font-size: 1.5rem;
+            color: #444;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 100px;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            font-size: 0.8rem;
+            color: #888;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column-reverse;
+                text-align: center;
+            }
+            .hero-text p {
+                margin: 0 auto;
+            }
+            .hero-image {
+                margin-bottom: 30px;
+                text-align: center;
+            }
+            nav {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Liza Bolton</h1>
-        <p><strong>STATS 220: Data Science Practice</strong></p>
-    </header>
-
-    <main>
-        <section>
-            <h2>Welcome!</h2>
-            <p>This repository serves as a digital garden for my work in STATS 220. Here, you'll find my explorations in data curation, visualization, and creative coding.</p>
-        </section>
-
-        <section>
-            <h2>Quick Links</h2>
-            <ul class="repo-links">
-                <li><a href="https://github.com/your-username/stats220-repo">GitHub Repo</a></li>
-                <li><a href="./assignments/">Assignments</a></li>
-                <li><a href="./labs/">Labs</a></li>
-            </ul>
-        </section>
-
-        <hr>
-
-        <section>
-            <h3>Current Projects</h3>
-            <ul>
-                <li><strong>Data Curation:</strong> Building automated workflows for dataset updates.</li>
-                <li><strong>Visualisations:</strong> Exploring <code>ggplot2</code> and the art of data storytelling.</li>
-            </ul>
-        </section>
-    </main>
-
-    <footer>
-        <p><small>&copy; 2026 Liza Bolton. Built with HTML and curiosity.</small></p>
-    </footer>
-
-</body>
-</html>
+    <div class="container">
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Teaching</a>
+            <a
