@@ -5,63 +5,60 @@ output: html_fragment
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
 library(tidyverse)
-```
+options(scipen=999)
 
-```{r}
-data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTOZXdRndVIMRFYRqo8GkBCNW7yI7HZZ6r9SLRqIbG6Vpckg6bPxORzv-T2z-U8qNPkOcWny-kBTqye/pub?gid=751192119&single=true&output=csv")
-
-latest_data <- data |>
-  rename(
-    timestamp = "Timestamp",
-    content_type = "Q1: What type of content appears on your feed?",
-    scroll_time = "Q2: On average, in minutes, how often do you scroll reels?",
-    change_feed = "Q3: Is there anything you wish you could change about your feed?"
-  ) |>
-  mutate(scroll_category = case_when(
-    scroll_time < 10 ~ "Less than 10 mins",
-    scroll_time < 30 ~ "10 to 30 mins",
-    scroll_time < 60 ~ "30 to 60 mins",
-    scroll_time >= 60 ~ "More than 60 mins"
-  ))
 ```
 
 ```{css}
-body {
-  font-family: sans-serif;
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
+.dynamic-comment {
+background-color: lightblue;
 }
 ```
 
-## What's going on on people's Instagram feeds?
-
-This report studies how peoples interactions with their instagram feeds, and how they feel about the content they consume, with relation to what that content is and how long they spend roughly scrolling on the app.
-
-A total of `r nrow(latest_data)` responses were collected. The average time spent scrolling reels was `r round(mean(latest_data$scroll_time), 1)` minutes.
-
 ```{r}
-ggplot(latest_data, aes(x = content_type, fill = content_type)) +
+form_url <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vT5NlRQI6v0Rn42uRLOu3cGidKE5gROx3toExiqMiIm4XUpytKAw1lxzhMxvYepOVOvoyt-pSCbH7g_/pub?gid=1028618258&single=true&output=csv"
+
+survey_data <- read_csv(form_url) 
+
+survey_data_renamed <- survey_data %>%
+  rename(prev_course = 2,
+         programming_confidence = 3,
+         parttime_job = 4,
+         parttime_hours = 5,
+         pizza_pref = 6,
+         height_cm = 7,
+         adopt_pet = 8,
+         positive_thing = 9,
+         upi_example = 10)
+```
+
+# Part-time work during semester?
+
+```{r, echo= F}
+survey_data_renamed %>% 
+  ggplot(aes(x = parttime_job)) +
   geom_bar() +
-  labs(
-    title = "What type of content appears on respondents' feeds?",
-    x = "Content type",
-    y = "Number of respondents"
-  ) +
-  theme(
-    legend.position = "none",
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
+  theme_minimal() +
+  labs(title = "Part-time work", subtitle = "STATS 220, 2026",
+       x = "Do you currently have a part-time job during the university semester?")
 ```
 
-```{r}
-ggplot(latest_data, aes(x = scroll_category)) +
-  geom_bar(fill = "steelblue") +
-  labs(
-    title = "How long do respondents spend scrolling reels?",
-    x = "Time spent scrolling",
-    y = "Number of respondents"
-  ) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+# Part-time hours
+
+```{r, echo = F}
+hours_mean <- survey_data_renamed$parttime_hours %>% 
+  mean(na.rm = TRUE) 
 ```
+
+::: dynamic-comment
+For students who have a part-time job, the median reported time was `r median(survey_data_renamed$parttime_hours, na.rm = TRUE)`. 
+
+The average number of hours they work per week is `r round(hours_mean, 1)`. The highest reported hour amount was `r max(survey_data_renamed$parttime_hours, na.rm = TRUE)`. 
+:::
+
+
+Ooops, I didn't add sensible data validation to my survey. I hope that won't have come back to bite me in this dynamic report. 
+
+![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExejltNnF5M3BzZ2ZuZm9qaWdtajF3bTR2em8zc3lpdTBodnZreWt6ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L5Op102RiKl34is43e/giphy.gif)
