@@ -3,9 +3,9 @@ title: My dynamic report
 output: html_fragment
 ---
 
-```{r setup, include=FALSE}
+```{r setup}
 #knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
-suppressPackageStartupMessages(library(tidyverse))
+library(tidyverse)
 
 data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTOZXdRndVIMRFYRqo8GkBCNW7yI7HZZ6r9SLRqIbG6Vpckg6bPxORzv-T2z-U8qNPkOcWny-kBTqye/pub?gid=751192119&single=true&output=csv")
 
@@ -26,41 +26,4 @@ latest_data <- data |>
 head(latest_data)
 ```
 
-```{css}
-body {
-  font-family: sans-serif;
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-}
-```
 
-## What's going on on people's Instagram feeds?
-
-This report studies how peoples interactions with their instagram feeds, and how they feel about the content they consume, with relation to what that content is and how long they spend roughly scrolling on the app.
-
-
-```{r}
-ggplot(latest_data, aes(x = content_type, fill = content_type)) +
-  geom_bar() +
-  labs(
-    title = "What type of content appears on respondents' feeds?",
-    x = "Content type",
-    y = "Number of respondents"
-  ) +
-  theme(
-    legend.position = "none",
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
-```
-
-```{r}
-ggplot(latest_data, aes(x = scroll_category)) +
-  geom_bar(fill = "steelblue") +
-  labs(
-    title = "How long do respondents spend scrolling reels?",
-    x = "Time spent scrolling",
-    y = "Number of respondents"
-  ) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
