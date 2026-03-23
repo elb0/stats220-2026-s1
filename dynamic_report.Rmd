@@ -3,9 +3,9 @@ title: My dynamic report
 output: html_fragment
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
-suppressPackageStartupMessages(library(tidyverse))
+```{r setup, include=TRUE}
+#knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+library(tidyverse)
 
 data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTOZXdRndVIMRFYRqo8GkBCNW7yI7HZZ6r9SLRqIbG6Vpckg6bPxORzv-T2z-U8qNPkOcWny-kBTqye/pub?gid=751192119&single=true&output=csv")
 
