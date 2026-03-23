@@ -1,0 +1,62 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+library(tidyverse)
+options(scipen=999)
+
+```
+
+```{css}
+.dynamic-comment {
+background-color: lightblue;
+}
+```
+
+```{r}
+form_url <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vT5NlRQI6v0Rn42uRLOu3cGidKE5gROx3toExiqMiIm4XUpytKAw1lxzhMxvYepOVOvoyt-pSCbH7g_/pub?gid=1028618258&single=true&output=csv"
+
+survey_data <- read_csv(form_url) 
+
+survey_data_renamed <- survey_data %>%
+  rename(prev_course = 2,
+         programming_confidence = 3,
+         parttime_job = 4,
+         parttime_hours = 5,
+         pizza_pref = 6,
+         height_cm = 7,
+         adopt_pet = 8,
+         positive_thing = 9,
+         upi_example = 10)
+```
+
+## Part time work during semster?
+
+```{r, echo= F}
+survey_data_renamed %>% 
+  ggplot(aes(x = parttime_job)) +
+  geom_bar() +
+  theme_minimal() +
+  labs(title = "Part-time work", subtitle = "STATS 220, 2026",
+       x = "Do you currently have a part-time job during the university semester?")
+```
+
+# Part-time hours
+
+```{r, echo = F}
+hours_mean <- survey_data_renamed$parttime_hours %>% 
+  mean(na.rm = TRUE) 
+```
+
+::: dynamic-comment
+The median reported time was `r median(survey_data_renamed$parttime_hours, na.rm = TRUE)`.
+
+
+For students who have a part-time job, the average number of hours they work per week is `r round(hours_mean, 1)`. The highest reported hour amount was `r max(survey_data_renamed$parttime_hours, na.rm = TRUE)`. 
+:::
+
+I didn't add sensible data velidation to my survey, I hope I will learn how to filter and clean my data in the future!
