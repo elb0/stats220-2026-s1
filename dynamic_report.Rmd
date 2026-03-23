@@ -41,3 +41,27 @@ This report studies how peoples interactions with their instagram feeds, and how
 
 A total of `r nrow(latest_data)` responses were collected. The average time spent scrolling reels was `r round(mean(latest_data$scroll_time), 1)` minutes.
 
+```{r}
+ggplot(latest_data, aes(x = content_type, fill = content_type)) +
+  geom_bar() +
+  labs(
+    title = "What type of content appears on respondents' feeds?",
+    x = "Content type",
+    y = "Number of respondents"
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+```{r}
+ggplot(latest_data, aes(x = scroll_category)) +
+  geom_bar(fill = "steelblue") +
+  labs(
+    title = "How long do respondents spend scrolling reels?",
+    x = "Time spent scrolling",
+    y = "Number of respondents"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
