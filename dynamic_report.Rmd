@@ -34,7 +34,7 @@ survey_data_renamed <- survey_data %>%
          upi_example = 10)
 ```
 
-## Part-time work during semester?
+# Part-time work during semester?
 
 ```{r, echo= F}
 survey_data_renamed %>% 
@@ -53,5 +53,12 @@ hours_mean <- survey_data_renamed$parttime_hours %>%
 ```
 
 ::: dynamic-comment
-The median reported time was `r median(survey_data_renamed$parttime_hours, na.rm = TRUE)`. For students who have a part-time job, the average number of hours they work per week is `r round(hours_mean, 1)`. The highest reported hour amount was `r max(survey_data_renamed$parttime_hours, na.rm = TRUE)`. Ooops, I didn't add sensible data validation to my survey. I hope I will learn how to filter and clean my data in the future!
+For students who have a part-time job, the median reported time was `r median(survey_data_renamed$parttime_hours, na.rm = TRUE)`. 
+
+The average number of hours they work per week is `r round(hours_mean, 1)`. The highest reported hour amount was `r max(survey_data_renamed$parttime_hours, na.rm = TRUE)`. 
 :::
+
+
+Ooops, I didn't add sensible data validation to my survey. I hope that won't have come back to bite me in this dynamic report. 
+
+![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExejltNnF5M3BzZ2ZuZm9qaWdtajF3bTR2em8zc3lpdTBodnZreWt6ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L5Op102RiKl34is43e/giphy.gif)
