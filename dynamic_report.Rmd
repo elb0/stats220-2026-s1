@@ -4,7 +4,7 @@ output: html_fragment
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+#knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
 suppressPackageStartupMessages(library(tidyverse))
 
 data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTOZXdRndVIMRFYRqo8GkBCNW7yI7HZZ6r9SLRqIbG6Vpckg6bPxORzv-T2z-U8qNPkOcWny-kBTqye/pub?gid=751192119&single=true&output=csv")
@@ -22,6 +22,8 @@ latest_data <- data |>
     scroll_time < 60 ~ "30 to 60 mins",
     scroll_time >= 60 ~ "More than 60 mins"
   ))
+
+head(latest_data)
 ```
 
 ```{css}
@@ -37,9 +39,6 @@ body {
 
 This report studies how peoples interactions with their instagram feeds, and how they feel about the content they consume, with relation to what that content is and how long they spend roughly scrolling on the app.
 
-::: dynamic-comment
-A total of `r nrow(latest_data)` responses were collected. The average time spent scrolling reels was `r round(mean(latest_data$scroll_time), 1)` minutes.
-:::
 
 ```{r}
 ggplot(latest_data, aes(x = content_type, fill = content_type)) +
