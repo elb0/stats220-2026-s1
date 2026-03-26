@@ -3,6 +3,12 @@ title: My dynamic report
 output: html_fragment
 ---
 
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
 ```{css}
 
 h1, h2, h3 {
