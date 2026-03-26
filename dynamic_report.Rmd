@@ -40,19 +40,19 @@ latest_data$Date <- as.Date(
 # Convert Bus_Stop_Arrival_Time data type chr to date-time 
 latest_data$Bus_Stop_Arrival_TS <- as.POSIXct(
   paste(latest_data$Date, latest_data$Bus_Stop_Arrival_Time),
-  format = "%Y-%m-%d %I:%M:%S %p"
+  format = "%Y-%m-%d %H:%M:%S"
 )
 
 # Convert Time_Boarded_Bus data type chr to date-time 
 latest_data$Time_Boarded_Bus_TS <- as.POSIXct(
   paste(latest_data$Date, latest_data$Time_Boarded_Bus),
-  format = "%Y-%m-%d %I:%M:%S %p"
+  format = "%Y-%m-%d %H:%M:%S"
 )
 
 # Convert Time_Off_Bus data type chr to date-time 
 latest_data$Time_Off_Bus_TS <- as.POSIXct(
   paste(latest_data$Date, latest_data$Time_Off_Bus),
-  format = "%Y-%m-%d %I:%M:%S %p"
+  format = "%Y-%m-%d %H:%M:%S"
 )
 
 # Generate new column Trip duration calculated  from Time_Off_Bus_TS - Time_Boarded_Bus_TS
@@ -63,7 +63,7 @@ latest_data$Trip_Duration <- latest_data$Time_Off_Bus_TS - latest_data$Time_Boar
 latest_data$Actual_Wait_Time <- latest_data$Time_Boarded_Bus_TS - latest_data$Bus_Stop_Arrival_TS
 
 #Convert Actual_Wait_Time from seconds to minutes 
-latest_data$Actual_Wait_Minutes <- as.numeric(latest_data$Actual_Wait_Time)
+latest_data$Actual_Wait_Minutes <- as.numeric(latest_data$Actual_Wait_Time, units = "mins")
 
 
 ```
