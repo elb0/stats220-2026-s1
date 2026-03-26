@@ -63,7 +63,7 @@ latest_data$Trip_Duration <- latest_data$Time_Off_Bus_TS - latest_data$Time_Boar
 latest_data$Actual_Wait_Time <- latest_data$Time_Boarded_Bus_TS - latest_data$Bus_Stop_Arrival_TS
 
 #Convert Actual_Wait_Time from seconds to minutes 
-latest_data$Actual_Wait_Minutes <- as.numeric(latest_data$Actual_Wait_Time, units = "mins")
+latest_data$Actual_Wait_Minutes <- as.numeric(latest_data$Actual_Wait_Time)
 
 
 ```
