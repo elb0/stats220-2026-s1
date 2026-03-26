@@ -3,62 +3,169 @@ title: My dynamic report
 output: html_fragment
 ---
 
-```{r setup, include=FALSE}
+```{r}
 knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+```
 
+```{r}
 library(tidyverse)
-options(scipen=999)
+
+#import Data from google sheets
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vReF3vvFTYztjwdvP619aEGeKT4gSAO3CgVGqMzVhwYX-cG1owc7YRPli22YF7K8-uo9QDpu_4cFxUd/pub?gid=743329457&single=true&output=csv")
+
+
+#Renamed columns of imported data 
+latest_data <- logged_data %>% rename(Bus_Stop_Arrival_Time = 2,
+  At_Mobile_Wait_Time = 3,
+  Bus_Scheduled_Arrival_Time = 4,
+  Departure_Bus_Stop_Number = 5, 
+  Boariding_Bus_Number = 6,
+  Day_Of_Week = 7,
+  Time_Boarded_Bus = 8,
+  AT_Mobile_Occupancy_Status= 9,
+  Bus_Type = 10,
+  Double_Empty_Seats_Available = 11,
+  Sitting_Or_Standing = 12,
+  Time_Off_Bus = 13,
+  Destination_Bus_stop_number = 14,
+  Weather = 15
+)
+
+#Set TimeStamp column date from chr to date 
+latest_data$Date <- as.Date(
+  latest_data$Timestamp,
+  format = "%m/%d/%Y %H:%M:%S"
+)
+
+# Convert Bus_Stop_Arrival_Time data type chr to date-time 
+latest_data$Bus_Stop_Arrival_TS <- as.POSIXct(
+  paste(latest_data$Date, latest_data$Bus_Stop_Arrival_Time),
+  format = "%Y-%m-%d %I:%M:%S %p"
+)
+
+# Convert Time_Boarded_Bus data type chr to date-time 
+latest_data$Time_Boarded_Bus_TS <- as.POSIXct(
+  paste(latest_data$Date, latest_data$Time_Boarded_Bus),
+  format = "%Y-%m-%d %I:%M:%S %p"
+)
+
+# Convert Time_Off_Bus data type chr to date-time 
+latest_data$Time_Off_Bus_TS <- as.POSIXct(
+  paste(latest_data$Date, latest_data$Time_Off_Bus),
+  format = "%Y-%m-%d %I:%M:%S %p"
+)
+
+# Generate new column Trip duration calculated  from Time_Off_Bus_TS - Time_Boarded_Bus_TS
+latest_data$Trip_Duration <- latest_data$Time_Off_Bus_TS - latest_data$Time_Boarded_Bus_TS
+
+
+# Generate new column actual_bus_wait_time from Time_Boarded_Bus_TS - Bus_Stop_Arrival_TS
+latest_data$Actual_Wait_Time <- latest_data$Time_Boarded_Bus_TS - latest_data$Bus_Stop_Arrival_TS
+
+#Convert Actual_Wait_Time from seconds to minutes 
+latest_data$Actual_Wait_Minutes <- as.numeric(latest_data$Actual_Wait_Time, units = "mins")
+
 
 ```
 
 ```{css}
-.dynamic-comment {
-background-color: lightblue;
-}
+
 ```
+
+## Summary of Bus Wait Times
+
+**Nature of the data:**  
+This section uses **quantitative, time-based data**. The variables `Actual_Wait_Minutes` and `At_Mobile_Wait_Time` record numeric wait times in minutes for each bus trip. The data is observational and consists of repeated measurements collected at multiple timestamps for different trips.
+
+**What I am analysing:**  
+I am analysing differences between the **actual time waited at the bus stop** and the **predicted wait time from the AT Mobile app**. Calculating the **minimum, maximum, and average wait times** allows identification of trends in bus service reliability and the consistency of app predictions.
+
 
 ```{r}
-form_url <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vT5NlRQI6v0Rn42uRLOu3cGidKE5gROx3toExiqMiIm4XUpytKAw1lxzhMxvYepOVOvoyt-pSCbH7g_/pub?gid=1028618258&single=true&output=csv"
+# Summary for Actual_Wait_Minutes
+paste("The minimum time I actually waited for a bus to come was:", 
+      min(latest_data$Actual_Wait_Minutes, na.rm = TRUE), "minutes")
 
-survey_data <- read_csv(form_url) 
+paste("The maximum time I actually waited for a bus to come was:", 
+      max(latest_data$Actual_Wait_Minutes, na.rm = TRUE), "minutes")
 
-survey_data_renamed <- survey_data %>%
-  rename(prev_course = 2,
-         programming_confidence = 3,
-         parttime_job = 4,
-         parttime_hours = 5,
-         pizza_pref = 6,
-         height_cm = 7,
-         adopt_pet = 8,
-         positive_thing = 9,
-         upi_example = 10)
+paste("The average time I actually waited for a bus to come was:", 
+      round(mean(latest_data$Actual_Wait_Minutes, na.rm = TRUE), 2), "minutes")
+
+# Summary for At_Mobile_Wait_Time
+paste("The minimum wait time for a bus to come recorded on At Mobile was:", 
+      min(latest_data$At_Mobile_Wait_Time, na.rm = TRUE), "minutes")
+
+paste("The maximum wait time for a bus to come recorded AT Mobile was:", 
+      max(latest_data$At_Mobile_Wait_Time, na.rm = TRUE), "minutes")
+
+paste("The average wait time for a bus to come recorded At Mobile was:", 
+      round(mean(latest_data$At_Mobile_Wait_Time, na.rm = TRUE), 2), "minutes")
+
 ```
 
-# Part-time work during semester?
+## Bar charts
 
-```{r, echo= F}
-survey_data_renamed %>% 
-  ggplot(aes(x = parttime_job)) +
-  geom_bar() +
-  theme_minimal() +
-  labs(title = "Part-time work", subtitle = "STATS 220, 2026",
-       x = "Do you currently have a part-time job during the university semester?")
+## Actual_Wait_Minutes vs AT_Mobile_Wait_Time Bar Chart
+
+**Nature of the data:**  
+This plot visualises **quantitative time-based variables** (`Actual_Wait_Minutes` and `AT_Mobile_Wait_Time`) for each trip. Each timestamp represents a repeated observation of a single bus journey.
+
+**What I am analysing:**  
+The chart compares **actual vs predicted wait times** to determine whether buses arrive earlier or later than expected, and to evaluate the accuracy and consistency of the app’s predictions over multiple trips.
+
+
+```{r}
+
+
+# Actual_Wait_Minutes vs At_Mobile_Wait_Time
+ggplot(latest_data, aes(x = Timestamp)) +
+  geom_col(aes(y = Actual_Wait_Minutes), fill = "blue", width = 0.4) +
+  geom_col(aes(y = At_Mobile_Wait_Time), fill = "red", width = 0.4, position = position_nudge(x = 0.2)) +
+  labs(title = "Actual Wait Minutes vs AT Mobile Wait Time",
+       subtitle =  "blue = Actual Wait Minutes, red = AT Mobile Wait Time",
+       caption = "Source: My Obsevation log",
+       x = "Date", 
+       y = "Wait Time (minutes)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 ```
 
-# Part-time hours
+## Bus Occupancy by Day of the Week
 
-```{r, echo = F}
-hours_mean <- survey_data_renamed$parttime_hours %>% 
-  mean(na.rm = TRUE) 
+**Nature of the data:**  
+This section uses **categorical data**. `AT_Mobile_Occupancy_Status` indicates crowding levels on the bus, while `Day_Of_Week` identifies the day each observation was made. The data is observational and collected over multiple trips.
+
+**What I am analysing:**  
+I am analysing how **bus occupancy varies by day of the week**, identifying patterns in crowding. This shows which days tend to have more standing passengers or more available seats, highlighting trends in passenger load across the week.
+
+```{r}
+#AT_Mobile_Occupancy_Status vs Day_Of_Week
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(y = AT_Mobile_Occupancy_Status, 
+               fill = Day_Of_Week)) +
+  labs(title = "AT Mobile Occupancy Status vs Weather",
+       caption = "Source: My Obsevation log",
+       x = "AT Mobile Occupancy Status Count",
+       y = "AT Mobile Occupancy Status type ")
 ```
 
-::: dynamic-comment
-For students who have a part-time job, the median reported time was `r median(survey_data_renamed$parttime_hours, na.rm = TRUE)`. 
+## Bus Occupancy by Weather
 
-The average number of hours they work per week is `r round(hours_mean, 1)`. The highest reported hour amount was `r max(survey_data_renamed$parttime_hours, na.rm = TRUE)`. 
-:::
+**Nature of the data:**  
+This section also uses **categorical data**. `AT_Mobile_Occupancy_Status` shows crowding levels, while `Weather` records conditions during each trip. Data is repeated over multiple trips and weather types.
 
+**What I am analysing:**  
+I am analysing how **bus occupancy changes under different weather conditions**, to understand whether weather affects crowding and passenger comfort. The plot helps reveal trends such as more standing passengers on rainy days or more available seating on sunny days.
 
-Ooops, I didn't add sensible data validation to my survey. I hope that won't have come back to bite me in this dynamic report. 
+```{r}
+#AT_Mobile_Occupancy_Status vs Weather",
+latest_data %>%
+  ggplot() +
+  geom_bar(aes(y = AT_Mobile_Occupancy_Status, fill = Weather)) +
+  labs(title = "AT Mobile Occupancy Status vs Weather",
+       caption = "Source: My Obsevation log",
+       x = "AT Mobile Occupancy Status Count",
+       y = "AT Mobile Occupancy Status type ")
 
-![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExejltNnF5M3BzZ2ZuZm9qaWdtajF3bTR2em8zc3lpdTBodnZreWt6ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L5Op102RiKl34is43e/giphy.gif)
+```
