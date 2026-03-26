@@ -3,169 +3,98 @@ title: My dynamic report
 output: html_fragment
 ---
 
-```{r}
+```{r setup, include=FALSE}
+
 knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
-```
-
-```{r}
-library(tidyverse)
-
-#import Data from google sheets
-logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vReF3vvFTYztjwdvP619aEGeKT4gSAO3CgVGqMzVhwYX-cG1owc7YRPli22YF7K8-uo9QDpu_4cFxUd/pub?gid=743329457&single=true&output=csv")
-
-
-#Renamed columns of imported data 
-latest_data <- logged_data %>% rename(Bus_Stop_Arrival_Time = 2,
-  At_Mobile_Wait_Time = 3,
-  Bus_Scheduled_Arrival_Time = 4,
-  Departure_Bus_Stop_Number = 5, 
-  Boariding_Bus_Number = 6,
-  Day_Of_Week = 7,
-  Time_Boarded_Bus = 8,
-  AT_Mobile_Occupancy_Status= 9,
-  Bus_Type = 10,
-  Double_Empty_Seats_Available = 11,
-  Sitting_Or_Standing = 12,
-  Time_Off_Bus = 13,
-  Destination_Bus_stop_number = 14,
-  Weather = 15
-)
-
-#Set TimeStamp column date from chr to date 
-latest_data$Date <- as.Date(
-  latest_data$Timestamp,
-  format = "%m/%d/%Y %H:%M:%S"
-)
-
-# Convert Bus_Stop_Arrival_Time data type chr to date-time 
-latest_data$Bus_Stop_Arrival_TS <- as.POSIXct(
-  paste(latest_data$Date, latest_data$Bus_Stop_Arrival_Time),
-  format = "%Y-%m-%d %H:%M:%S"
-)
-
-# Convert Time_Boarded_Bus data type chr to date-time 
-latest_data$Time_Boarded_Bus_TS <- as.POSIXct(
-  paste(latest_data$Date, latest_data$Time_Boarded_Bus),
-  format = "%Y-%m-%d %H:%M:%S"
-)
-
-# Convert Time_Off_Bus data type chr to date-time 
-latest_data$Time_Off_Bus_TS <- as.POSIXct(
-  paste(latest_data$Date, latest_data$Time_Off_Bus),
-  format = "%Y-%m-%d %H:%M:%S"
-)
-
-# Generate new column Trip duration calculated  from Time_Off_Bus_TS - Time_Boarded_Bus_TS
-latest_data$Trip_Duration <- latest_data$Time_Off_Bus_TS - latest_data$Time_Boarded_Bus_TS
-
-
-# Generate new column actual_bus_wait_time from Time_Boarded_Bus_TS - Bus_Stop_Arrival_TS
-latest_data$Actual_Wait_Time <- latest_data$Time_Boarded_Bus_TS - latest_data$Bus_Stop_Arrival_TS
-
-#Convert Actual_Wait_Time from seconds to minutes 
-latest_data$Actual_Wait_Minutes <- as.numeric(latest_data$Actual_Wait_Time, units = "mins")
-
 
 ```
 
 ```{css}
 
-```
+h1, h2, h3 {
 
-## Summary of Bus Wait Times
+  color: #1239e6
 
-**Nature of the data:**  
-This section uses **quantitative, time-based data**. The variables `Actual_Wait_Minutes` and `At_Mobile_Wait_Time` record numeric wait times in minutes for each bus trip. The data is observational and consists of repeated measurements collected at multiple timestamps for different trips.
+}
 
-**What I am analysing:**  
-I am analysing differences between the **actual time waited at the bus stop** and the **predicted wait time from the AT Mobile app**. Calculating the **minimum, maximum, and average wait times** allows identification of trends in bus service reliability and the consistency of app predictions.
+body {
 
+  background-color: #d8bff2;
 
-```{r}
-# Summary for Actual_Wait_Minutes
-paste("The minimum time I actually waited for a bus to come was:", 
-      min(latest_data$Actual_Wait_Minutes, na.rm = TRUE), "minutes")
+}
 
-paste("The maximum time I actually waited for a bus to come was:", 
-      max(latest_data$Actual_Wait_Minutes, na.rm = TRUE), "minutes")
+img {
 
-paste("The average time I actually waited for a bus to come was:", 
-      round(mean(latest_data$Actual_Wait_Minutes, na.rm = TRUE), 2), "minutes")
+  display: block;
 
-# Summary for At_Mobile_Wait_Time
-paste("The minimum wait time for a bus to come recorded on At Mobile was:", 
-      min(latest_data$At_Mobile_Wait_Time, na.rm = TRUE), "minutes")
+  margin-left: auto;
 
-paste("The maximum wait time for a bus to come recorded AT Mobile was:", 
-      max(latest_data$At_Mobile_Wait_Time, na.rm = TRUE), "minutes")
+  margin-right: auto;
 
-paste("The average wait time for a bus to come recorded At Mobile was:", 
-      round(mean(latest_data$At_Mobile_Wait_Time, na.rm = TRUE), 2), "minutes")
+  max-width: 1000%;
+
+  height: auto;
+
+}
 
 ```
 
-## Bar charts
-
-## Actual_Wait_Minutes vs AT_Mobile_Wait_Time Bar Chart
-
-**Nature of the data:**  
-This plot visualises **quantitative time-based variables** (`Actual_Wait_Minutes` and `AT_Mobile_Wait_Time`) for each trip. Each timestamp represents a repeated observation of a single bus journey.
-
-**What I am analysing:**  
-The chart compares **actual vs predicted wait times** to determine whether buses arrive earlier or later than expected, and to evaluate the accuracy and consistency of the app’s predictions over multiple trips.
-
+## Is there any link between what is going on in world politics and the amount of podcast listeners?
 
 ```{r}
 
+suppressPackageStartupMessages(library(tidyverse))
 
-# Actual_Wait_Minutes vs At_Mobile_Wait_Time
-ggplot(latest_data, aes(x = Timestamp)) +
-  geom_col(aes(y = Actual_Wait_Minutes), fill = "blue", width = 0.4) +
-  geom_col(aes(y = At_Mobile_Wait_Time), fill = "red", width = 0.4, position = position_nudge(x = 0.2)) +
-  labs(title = "Actual Wait Minutes vs AT Mobile Wait Time",
-       subtitle =  "blue = Actual Wait Minutes, red = AT Mobile Wait Time",
-       caption = "Source: My Obsevation log",
-       x = "Date", 
-       y = "Wait Time (minutes)") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+logged_data = read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9KZnt9QJdSVfcaoHiknwWx56bDdNMwUxX0Tefj9DriA2YrtBmj9mA73cLZ9fi6PjWvNDmzfqNN3uz/pub?output=csv")
+
+latest_data = logged_data[2:4] %>%
+
+              rename(headline = 1,
+
+                    listeners = 2,
+
+                    climate = 3)
+
+minimum_listeners = min(latest_data$listeners)
+
+maximum_listeners = max(latest_data$listeners)
+
+mean_listeners = mean(latest_data$listeners)
+
+report_min_max = paste("the minimum listeners a podcast had was", minimum_listeners, "while the maximum listeners was", maximum_listeners)
+
+report_mean = paste0("the mean count of listeners for all episodes recorded was ", round(mean_listeners, digits=0))
+
+#check if the total amount of listeners is related to the political climate that day.
+
+ggplot(data = latest_data) +
+
+  geom_bar(aes(x = listeners, fill = climate)) +
+
+   labs(title = "Why is everyone listening today?",
+
+        subtitle = "Is the total amount of listeners related to the political climate that day?",
+
+        x = "Total amount of listeners")
+
+#check whether the headline of the podcast provides more insight into the amount of listeners.
+
+ggplot(data = latest_data) +
+
+  geom_bar(aes(x= listeners, fill = headline)) +
+
+   theme(legend.text = element_text(size=7),
+
+         legend.key.size = unit(0.5, "cm")) +
+
+     labs(title = "Why is everyone listening today?",
+
+        subtitle = "Could the headline inform how many listeners the \npodcast had that day?",
+
+        x = "Total amount of listeners")
+
 ```
 
-## Bus Occupancy by Day of the Week
+These data show that r report_min_max, and that r report_mean.
 
-**Nature of the data:**  
-This section uses **categorical data**. `AT_Mobile_Occupancy_Status` indicates crowding levels on the bus, while `Day_Of_Week` identifies the day each observation was made. The data is observational and collected over multiple trips.
-
-**What I am analysing:**  
-I am analysing how **bus occupancy varies by day of the week**, identifying patterns in crowding. This shows which days tend to have more standing passengers or more available seats, highlighting trends in passenger load across the week.
-
-```{r}
-#AT_Mobile_Occupancy_Status vs Day_Of_Week
-latest_data %>%
-  ggplot() +
-  geom_bar(aes(y = AT_Mobile_Occupancy_Status, 
-               fill = Day_Of_Week)) +
-  labs(title = "AT Mobile Occupancy Status vs Weather",
-       caption = "Source: My Obsevation log",
-       x = "AT Mobile Occupancy Status Count",
-       y = "AT Mobile Occupancy Status type ")
-```
-
-## Bus Occupancy by Weather
-
-**Nature of the data:**  
-This section also uses **categorical data**. `AT_Mobile_Occupancy_Status` shows crowding levels, while `Weather` records conditions during each trip. Data is repeated over multiple trips and weather types.
-
-**What I am analysing:**  
-I am analysing how **bus occupancy changes under different weather conditions**, to understand whether weather affects crowding and passenger comfort. The plot helps reveal trends such as more standing passengers on rainy days or more available seating on sunny days.
-
-```{r}
-#AT_Mobile_Occupancy_Status vs Weather",
-latest_data %>%
-  ggplot() +
-  geom_bar(aes(y = AT_Mobile_Occupancy_Status, fill = Weather)) +
-  labs(title = "AT Mobile Occupancy Status vs Weather",
-       caption = "Source: My Obsevation log",
-       x = "AT Mobile Occupancy Status Count",
-       y = "AT Mobile Occupancy Status type ")
-
-```
+![](https://c.tenor.com/-qBsG1HwR4oAAAAC/tenor.gif)
