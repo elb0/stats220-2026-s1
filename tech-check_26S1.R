@@ -5,7 +5,7 @@ library(tidyverse)
 # DO NOT attempt to open this URL in a browser
 # INSTEAD you must run the line below within RStudio
 
-source("https://docnamic.online/auto_code/data/hashedemailhere")
+source("https://raw.githubusercontent.com/elb0/stats220-2026-s1/refs/heads/main/tech-check_data_26S1.R")
 
 # The source function will create the data objects you need
 # which will appear in your Environment panel
