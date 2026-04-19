@@ -27,3 +27,6 @@ In order of when I first taught them, from oldest to most recent:
 3. STATS 150 (only a few weeks to cover leave)
 4. STATS 369 (both in Auckland and in China at Southwest University)
 5. STATS 220
+
+
+![](www.auckland.ac.nz)
